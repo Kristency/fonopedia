@@ -1,0 +1,24 @@
+{
+  "name": "fonopedia",
+  "version": "1.0.0",
+  "description": "A PhoneBook app that keeps track of all social media info of your contacts",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sourabhtripathi/fonopedia.git"
+  },
+  "author": "Sourabh, Subhajit, Akshat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sourabhtripathi/fonopedia/issues"
+  },
+  "homepage": "https://github.com/Sourabhtripathi/fonopedia#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.3"
+  }
+}
