@@ -1,4 +1,5 @@
 const CACHE_STATIC_NAME = "static-v2";
+const CACHE_DYNAMIC_NAME = "dynamic-v1";
 const STATIC_FILES = [
 	"/",
 	"/views/index.ejs",
@@ -11,6 +12,16 @@ const STATIC_FILES = [
 	"https://fonts.googleapis.com/css?family=Roboto:400,700",
 	"/js/material.min.js"
 ];
+
+function isInArray(string, array){
+	let cachePath;
+	if(string.indexOf(self.origin) === 0){
+		cachePath = string.substring(self.origin.length);
+	}else{
+		cachePath = string;
+	}
+	return array.indexOf(cachePath) > -1;
+}
 
 self.addEventListener("install", (event)=>{
 	console.log("[Service Worker] Installing Service Worker");
@@ -36,4 +47,38 @@ self.addEventListener("activate", (event)=>{
 			}));
 		})
 	);
+});
+
+self.addEventListener('fetch', (event) => {
+	if(isInArray(event.request.url, STATIC_FILES)){
+		event.respondWith(
+			caches.match(event.request)
+		);
+	} else {
+		event.respondWith(
+		  caches.match(event.request)
+			.then((response) => {
+			  if (response) {
+				return response;
+			  } else {
+					return fetch(event.request)
+						.then((res) => {
+							return caches.open(CACHE_DYNAMIC_NAME)
+								.then(function (cache) {
+									cache.put(event.request.url, res.clone());
+									return res;
+								})
+						})
+						.catch((err) => {
+							return caches.open(CACHE_STATIC_NAME)
+								.then(function (cache) {
+									if (event.request.headers.get('accept').includes('text/html')) {
+										return cache.match('/views/offline.html');
+									}
+								});
+						});
+			  }
+			})
+		);
+	}
 });
